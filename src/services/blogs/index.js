@@ -9,7 +9,9 @@ router
     .route("/")
     .get(async (req, res, next) => {
         try {
-            const data = await Blog.findAll({ include: { model: models.Author } })
+            const data = await Blog.findAll({
+                attributes: ["id", "category", "title", "cover", "read_time_value", "read_time_unit", "content"]
+            })
             res.send(data)
         } catch (error) {
             next(error.message)
@@ -28,7 +30,20 @@ router
     .route("/:id")
     .get(async (req, res, next) => {
         try {
-            const data = await Blog.findByPk(req.params.id, { include: { model: models.Author } })
+            const data = await Blog.findByPk(req.params.id, {
+                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] },
+                attributes: [
+                    "id",
+                    "category",
+                    "title",
+                    "cover",
+                    "read_time_value",
+                    "read_time_unit",
+                    "content",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            })
             res.send(data)
         } catch (error) {
             next(error.message)

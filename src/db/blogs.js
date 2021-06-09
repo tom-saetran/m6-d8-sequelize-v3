@@ -28,10 +28,6 @@ export default (sequelize, DataTypes) => {
         content: {
             type: DataTypes.TEXT,
             allowNull: false
-        },
-        authorId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
         }
     })
     return Blog
