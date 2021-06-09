@@ -1,5 +1,6 @@
 import express from "express";
-
+import models from "../../db/index.js";
+const Module = models.Module;
 const router = express.Router();
 
 router

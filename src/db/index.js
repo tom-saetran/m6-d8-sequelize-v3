@@ -5,6 +5,7 @@ import StudentModel from "./students.js";
 import ClassModel from "./classes.js";
 import ModuleModel from "./modules.js";
 import TutorModel from "./tutors.js";
+import StudentClass from "./StudentClass.js";
 const { PGUSER, PGDATABASE, PGPASSWORD, PGHOST } = process.env;
 
 const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
@@ -26,11 +27,21 @@ const models = {
   Class: ClassModel(sequelize, DataTypes),
   Module: ModuleModel(sequelize, DataTypes),
   Tutor: TutorModel(sequelize, DataTypes),
+  StudentClass: StudentClass(sequelize, DataTypes),
   sequelize: sequelize,
 };
 
 models.Module.hasMany(models.Class);
 models.Class.belongsTo(models.Module);
+
+models.Class.belongsToMany(models.Student, {
+  through: { model: models.StudentClass, unique: false, timestamps: false },
+});
+models.Student.belongsToMany(models.Class, {
+  through: { model: models.StudentClass, unique: false, timestamps: false },
+});
+models.Tutor.hasMany(models.Class);
+models.Class.belongsTo(models.Tutor);
 test();
 
 export default models;
