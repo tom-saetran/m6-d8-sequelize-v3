@@ -3,6 +3,8 @@ import models from "../../db/index.js";
 const Class = models.Class;
 const Module = models.Module;
 const Tutor = models.Tutor;
+const Student = models.Student;
+const StudentClass = models.StudentClass;
 const router = express.Router();
 
 router
@@ -10,7 +12,11 @@ router
   .get(async (req, res, next) => {
     try {
       const data = await Class.findAll({
-        include: [{ model: Module, attributes: { exclude: "topic" } }, Tutor],
+        include: [
+          { model: Module },
+          Tutor,
+          { model: Student, through: { attributes: [] } },
+        ],
       });
       res.send(data);
     } catch (e) {
@@ -26,6 +32,17 @@ router
     }
   });
 
+router.route("/:classId/addStudent/:studentId").post(async (req, res, next) => {
+  try {
+    const data = await StudentClass.create({
+      classId: req.params.classId,
+      studentId: req.params.studentId,
+    });
+    res.send(data);
+  } catch (e) {
+    console.log(e);
+  }
+});
 router
   .route("/:id")
   .get(async (req, res, next) => {

@@ -1,4 +1,5 @@
 import s from "sequelize";
+import pg from "pg";
 const Sequelize = s.Sequelize;
 const DataTypes = s.DataTypes;
 import StudentModel from "./students.js";
@@ -12,7 +13,7 @@ const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
   dialect: "postgres",
 });
-
+const pool = new pg.Pool();
 const test = async () => {
   try {
     await sequelize.authenticate();
@@ -29,6 +30,7 @@ const models = {
   Tutor: TutorModel(sequelize, DataTypes),
   StudentClass: StudentClass(sequelize, DataTypes),
   sequelize: sequelize,
+  pool: pool,
 };
 
 models.Module.hasMany(models.Class);
