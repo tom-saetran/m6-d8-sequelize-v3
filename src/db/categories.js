@@ -5,15 +5,7 @@ export default (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        name: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        surname: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        avatar: {
+        category: {
             type: DataTypes.TEXT,
             allowNull: false
         }
