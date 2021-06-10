@@ -1,30 +1,22 @@
 export default (sequelize, DataTypes) => {
-    const Blog = sequelize.define("blog", {
+    const Category = sequelize.define("category", {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        title: {
+        name: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        cover: {
+        surname: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        read_time_value: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        read_time_unit: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        content: {
+        avatar: {
             type: DataTypes.TEXT,
             allowNull: false
         }
     })
-    return Blog
+    return Category
 }

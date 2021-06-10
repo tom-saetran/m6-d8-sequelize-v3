@@ -1,5 +1,6 @@
 import express from "express"
 import models from "../../db/index.js"
+import createError from "http-errors"
 
 const Blog = models.Blog
 
@@ -19,10 +20,13 @@ router
     })
     .post(async (req, res, next) => {
         try {
-            const data = await Blog.create(req.body)
-            res.send(data)
+            if (!req.body.authorId) next(createError(400, "ID required"))
+            else {
+                const data = await Blog.create(req.body)
+                res.send(data)
+            }
         } catch (error) {
-            next(error.message)
+            next(error)
         }
     })
 

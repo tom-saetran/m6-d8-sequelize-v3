@@ -1,57 +1,63 @@
 import express from "express"
 import models from "../../db/index.js"
+import createError from "http-errors"
 
-const Author = models.Author
+const Category = models.Category
 
 const router = express.Router()
 
 router
     .route("/")
+
     .get(async (req, res, next) => {
         try {
-            const data = await Author.findAll()
-            res.send(data)
-        } catch (error) {
-            next(error.message)
-        }
-    })
-    .post(async (req, res, next) => {
-        try {
-            const data = await Author.create(req.body)
+            const data = await Category.findAll()
             res.send(data)
         } catch (error) {
             next(error.message)
         }
     })
 
+    .post(async (req, res, next) => {
+        try {
+            if (!req.body.authorId) next(createError(400, "ID required"))
+            else {
+                const data = await Category.create(req.body)
+                res.send(data)
+            }
+        } catch (error) {
+            next(error)
+        }
+    })
+
 router
     .route("/:id")
+
     .get(async (req, res, next) => {
         try {
-            const data = await Author.findByPk(req.params.id, {
-                include: {
-                    model: models.Blog,
-                    attributes: [
-                        "id",
-                        "title",
-                        "content",
-                        "cover",
-                        "category",
-                        "read_time_unit",
-                        "read_time_value",
-                        "createdAt",
-                        "updatedAt"
-                    ]
-                }
+            const data = await Category.findByPk(req.params.id, {
+                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] },
+                attributes: [
+                    "id",
+                    "category",
+                    "title",
+                    "cover",
+                    "read_time_value",
+                    "read_time_unit",
+                    "content",
+                    "createdAt",
+                    "updatedAt"
+                ]
             })
             res.send(data)
         } catch (error) {
             next(error.message)
         }
     })
+
     .put(async (req, res, next) => {
         try {
-            const data = await Author.update(req.body, {
+            const data = await Category.update(req.body, {
                 where: { id: req.params.id },
                 returning: true
             })
@@ -61,9 +67,10 @@ router
             next(error.message)
         }
     })
+
     .delete(async (req, res, next) => {
         try {
-            const row = await Author.destroy({ where: { id: req.params.id } })
+            const row = await Category.destroy({ where: { id: req.params.id } })
             if (row > 0) res.send("Deleted")
             else res.status(404).send("ID not found")
         } catch (error) {
