@@ -20,11 +20,8 @@ router
 
     .post(async (req, res, next) => {
         try {
-            if (!req.body.authorId) next(createError(400, "ID required"))
-            else {
-                const data = await Category.create(req.body)
-                res.send(data)
-            }
+            const data = await Category.create(req.body)
+            res.send(data)
         } catch (error) {
             next(error)
         }
@@ -35,21 +32,9 @@ router
 
     .get(async (req, res, next) => {
         try {
-            const data = await Category.findByPk(req.params.id, {
-                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] },
-                attributes: [
-                    "id",
-                    "category",
-                    "title",
-                    "cover",
-                    "read_time_value",
-                    "read_time_unit",
-                    "content",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            })
-            res.send(data)
+            const data = await Category.findByPk(req.params.id)
+            if (data) res.send(data)
+            else next(createError(404, "ID not found"))
         } catch (error) {
             next(error.message)
         }

@@ -9,7 +9,7 @@ router
     .route("/")
     .get(async (req, res, next) => {
         try {
-            const data = await Author.findAll()
+            const data = await Author.findAll({ include: models.Blogs })
             res.send(data)
         } catch (error) {
             next(error.message)
@@ -36,7 +36,6 @@ router
                         "title",
                         "content",
                         "cover",
-                        "category",
                         "read_time_unit",
                         "read_time_value",
                         "createdAt",

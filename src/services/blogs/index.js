@@ -11,7 +11,25 @@ router
     .get(async (req, res, next) => {
         try {
             const data = await Blog.findAll({
-                attributes: ["id", "category", "title", "cover", "read_time_value", "read_time_unit", "content"]
+                include: [
+                    {
+                        model: models.Category,
+                        attributes: ["id", "category"]
+                    },
+                    {
+                        model: models.Comment,
+                        attributes: ["id", "comment"],
+                        include: {
+                            model: models.Author,
+                            attributes: ["name", "surname"]
+                        }
+                    },
+                    {
+                        model: models.Author,
+                        attributes: ["id", "name", "surname", "avatar"]
+                    }
+                ],
+                attributes: ["id", "title", "cover", "read_time_value", "read_time_unit", "content"]
             })
             res.send(data)
         } catch (error) {
@@ -20,7 +38,8 @@ router
     })
     .post(async (req, res, next) => {
         try {
-            if (!req.body.authorId) next(createError(400, "ID required"))
+            if (!req.body.authorId) next(createError(400, "Author ID required"))
+            if (!req.body.categoryId) next(createError(400, "Cateogry ID required"))
             else {
                 const data = await Blog.create(req.body)
                 res.send(data)
@@ -35,18 +54,25 @@ router
     .get(async (req, res, next) => {
         try {
             const data = await Blog.findByPk(req.params.id, {
-                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] },
-                attributes: [
-                    "id",
-                    "category",
-                    "title",
-                    "cover",
-                    "read_time_value",
-                    "read_time_unit",
-                    "content",
-                    "createdAt",
-                    "updatedAt"
-                ]
+                include: [
+                    {
+                        model: models.Category,
+                        attributes: ["id", "category"]
+                    },
+                    {
+                        model: models.Comment,
+                        attributes: ["id", "comment"],
+                        include: {
+                            model: models.Author,
+                            attributes: ["name", "surname"]
+                        }
+                    },
+                    {
+                        model: models.Author,
+                        attributes: ["id", "name", "surname", "avatar"]
+                    }
+                ],
+                attributes: ["id", "title", "cover", "read_time_value", "read_time_unit", "content"]
             })
             res.send(data)
         } catch (error) {

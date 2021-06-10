@@ -20,7 +20,8 @@ router
 
     .post(async (req, res, next) => {
         try {
-            if (!req.body.authorId) next(createError(400, "ID required"))
+            if (!req.body.authorId) next(createError(400, "Author ID required"))
+            if (!req.body.blogId) next(createError(400, "Blog ID required"))
             else {
                 const data = await Comment.create(req.body)
                 res.send(data)
@@ -36,18 +37,7 @@ router
     .get(async (req, res, next) => {
         try {
             const data = await Comment.findByPk(req.params.id, {
-                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] },
-                attributes: [
-                    "id",
-                    "category",
-                    "title",
-                    "cover",
-                    "read_time_value",
-                    "read_time_unit",
-                    "content",
-                    "createdAt",
-                    "updatedAt"
-                ]
+                include: { model: models.Author, attributes: ["id", "name", "surname", "avatar"] }
             })
             res.send(data)
         } catch (error) {
